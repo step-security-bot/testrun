@@ -3,16 +3,16 @@
 set -o xtrace
 TESTRUN_OUT=/tmp/testrun.log
 
-gateway=$(ip route | head -n 1 | awk '{print $3}')
-ip4=$(ip a show eth0 | grep "inet " | awk '{{print $2}}')
-
-
 
 sudo ip link add dummy0 type dummy
 
 # Setup requirements
 sudo apt-get update
 sudo apt-get install openvswitch-common openvswitch-switch 
+
+gateway=$(ip route | head -n 1 | awk '{print $3}')
+ip4=$(ip a show eth0 | grep "inet " | awk '{{print $2}}')
+
 
 sudo /usr/share/openvswitch/scripts/ovs-ctl start
 sleep 1
