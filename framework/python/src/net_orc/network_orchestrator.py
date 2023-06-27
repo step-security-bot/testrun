@@ -330,7 +330,7 @@ class NetworkOrchestrator:
 
   def create_net(self):
     LOGGER.info('Creating baseline network')
-
+    time.sleep(5)
     if not util.interface_exists(self._int_intf) or not util.interface_exists(
         self._dev_intf):
       LOGGER.error('Configured interfaces are not ready for use. ' +
@@ -338,11 +338,12 @@ class NetworkOrchestrator:
       sys.exit(1)
 
     if self._single_intf:
+      time.sleep(5)
       self._ci_pre_network_create()
-
+    time.sleep(5)
     # Remove IP from internet adapter
     util.run_command('ifconfig ' + self._int_intf + ' 0.0.0.0')
-
+    time.sleep(5)
     # Setup the virtual network
     if not self._ovs.create_baseline_net(verify=True):
       LOGGER.error('Baseline network validation failed.')
@@ -444,13 +445,13 @@ class NetworkOrchestrator:
     return net_module
 
   def build_network_modules(self):
-    LOGGER.info('Building network modules...')
+    LOGGER.info('LOGGER.infodules...')
     for net_module in self._net_modules:
       if not net_module.template:
         self._build_module(net_module)
 
   def _build_module(self, net_module):
-    LOGGER.info('Building network module ' + net_module.dir_name)
+    LOGGER.info('LOGGER.infodule ' + net_module.dir_name)
     client = docker.from_env()
     client.images.build(dockerfile=os.path.join(net_module.dir,
                                                 net_module.build_file),
