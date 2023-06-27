@@ -3,7 +3,7 @@
 set -o xtrace
 TESTRUN_OUT=/tmp/testrun.log
 
-ifconfig
+sudo ip link add dummy0 type dummy
 
 # Setup requirements
 sudo apt-get update
@@ -13,6 +13,6 @@ sudo /usr/share/openvswitch/scripts/ovs-ctl start
 sleep 10 
 sudo ovs-vsctl add-br br0
 sleep 10
-sudo ovs-vsctl add-port br0 eth0
+timeout 10 sudo ovs-vsctl add-port br0 dummy0
 sleep 10
 echo done here
