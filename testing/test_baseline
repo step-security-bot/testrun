@@ -8,7 +8,7 @@ sudo ip link add dummy0 type dummy
 
 # Setup requirements
 sudo apt-get update
-sudo apt-get install openvswitch-common openvswitch-switch 
+sudo apt-get install openvswitch-common openvswitch-switch  isc-dhcp-client
 
 gateway=$(ip route | head -n 1 | awk '{print $3}')
 ip4=$(ip a show eth0 | grep "inet " | awk '{{print $2}}')
@@ -24,5 +24,5 @@ sudo ip addr add $ip4 dev br0
 sudo ip route append default via $gateway dev br0
 sudo echo "nameserver 8.8.8.8" > /etc/resolv.conf
 sudo ip link set br0 up
-sleep 10
+sudo dhclient -v -i br0
 echo done here
