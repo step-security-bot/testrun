@@ -90,6 +90,7 @@ class NetworkOrchestrator:
     self.validator = NetworkValidator()
     shutil.rmtree(os.path.join(os.getcwd(), NET_DIR), ignore_errors=True)
     self.network_config = NetworkConfig()
+    LOGGER.debug("test debug string")
     self.load_config(config_file)
     self._ovs = OVSControl()
     self._ip_ctrl = IPControl()
