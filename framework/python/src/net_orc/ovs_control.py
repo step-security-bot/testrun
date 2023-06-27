@@ -104,7 +104,7 @@ class OVSControl:
       verified = False
     return verified
 
-  def LOGGER.infoe_net(self, verify=True):
+  def create_baseline_net(self, verify=True):
     LOGGER.info('Creating baseline network')
     time.sleep(5)
     # Remove IP from internet adapter
