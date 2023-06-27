@@ -28,7 +28,7 @@ def run_command(cmd, output=True):
   will only return a boolean result indicating if it was
   succesful in running the command.  Failure is indicated
   by any return code from the process other than zero."""
-
+  LOGGER.info(f"exec {cmd}")
   success = False
   process = subprocess.Popen(shlex.split(cmd),
                              stdout=subprocess.PIPE,

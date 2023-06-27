@@ -27,6 +27,7 @@ LOGGER = logger.get_logger('util')
 # by any return code from the process other than zero.
 def run_command(cmd, output=True):
   success = False
+  LOGGER.info(f"exec {cmd}")
   process = subprocess.Popen(shlex.split(cmd),
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)

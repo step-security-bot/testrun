@@ -25,6 +25,7 @@ import shlex
 
 
 def run_command(cmd, logger, output=True):
+  LOGGER.info(f"exec {cmd}")
   success = False
   process = subprocess.Popen(shlex.split(cmd),
                              stdout=subprocess.PIPE,
