@@ -40,8 +40,8 @@ class BaselineModuleRunner:
     self._test_module.run_tests()
 
   def _handler(self, signum):
-    LOGGER.debug('SigtermEnum: ' + str(signal.SIGTERM))
-    LOGGER.debug('Exit signal received: ' + str(signum))
+    LOGGER.info('SigtermEnum: ' + str(signal.SIGTERM))
+    LOGGER.info('Exit signal received: ' + str(signum))
     if signum in (2, signal.SIGTERM):
       LOGGER.info('Exit signal received. Stopping test module...')
       LOGGER.info('Test module stopped')

@@ -56,7 +56,7 @@ class TestOrchestrator:
                   ignore_errors=True)
 
   def start(self):
-    LOGGER.debug("Starting test orchestrator")
+    LOGGER.info("Starting test orchestrator")
 
     # Setup the output directory
     self._host_user = self._get_host_user()
@@ -106,7 +106,7 @@ addr {device.mac_addr}""")
         except (FileNotFoundError, PermissionError,
                 json.JSONDecodeError) as results_error:
           LOGGER.error("Error occured whilst running module " + module.name)
-          LOGGER.debug(results_error)
+          LOGGER.info(results_error)
 
     out_file = os.path.join(
         self._root_path,
@@ -193,12 +193,12 @@ addr {device.mac_addr}""")
     except (docker.errors.APIError,
             docker.errors.ContainerError) as container_error:
       LOGGER.error("Test module " + module.name + " has failed to start")
-      LOGGER.debug(container_error)
+      LOGGER.info(container_error)
       return
 
     # Mount the test container to the virtual network if requried
     if module.network:
-      LOGGER.debug("Attaching test module to the network")
+      LOGGER.info("Attaching test module to the network")
       self._net_orc.attach_test_module_to_network(module)
 
     # Determine the module timeout time
@@ -231,7 +231,7 @@ addr {device.mac_addr}""")
       client = docker.from_env()
       container = client.containers.get(module.container_name)
     except docker.errors.NotFound:
-      LOGGER.debug("Container " + module.container_name + " not found")
+      LOGGER.info("Container " + module.container_name + " not found")
     except docker.errors.APIError as error:
       LOGGER.error("Failed to resolve container")
       LOGGER.error(error)
@@ -244,7 +244,7 @@ addr {device.mac_addr}""")
     if user is None:
       user = self._get_user()
 
-    LOGGER.debug("Test orchestrator host user: " + user)
+    LOGGER.info("Test orchestrator host user: " + user)
     return user
 
   def _get_os_user(self):
@@ -280,7 +280,7 @@ addr {device.mac_addr}""")
 
   def _load_test_modules(self):
     """Load network modules from module_config.json."""
-    LOGGER.debug("Loading test modules from /" + TEST_MODULES_DIR)
+    LOGGER.info("Loading test modules from /" + TEST_MODULES_DIR)
 
     loaded_modules = "Loaded the following test modules: "
     test_modules_dir = os.path.join(self._path, TEST_MODULES_DIR)
@@ -336,7 +336,7 @@ addr {device.mac_addr}""")
       self._build_test_module(module)
 
   def _build_test_module(self, module):
-    LOGGER.debug("Building docker image for module " + module.dir_name)
+    LOGGER.info("Building docker image for module " + module.dir_name)
     client = docker.from_env()
     try:
       client.images.build(
@@ -357,16 +357,16 @@ addr {device.mac_addr}""")
     LOGGER.info("All test modules have been stopped")
 
   def _stop_module(self, module, kill=False):
-    LOGGER.debug("Stopping test module " + module.container_name)
+    LOGGER.info("Stopping test module " + module.container_name)
     try:
       container = module.container
       if container is not None:
         if kill:
-          LOGGER.debug("Killing container:" + module.container_name)
+          LOGGER.info("Killing container:" + module.container_name)
           container.kill()
         else:
-          LOGGER.debug("Stopping container:" + module.container_name)
+          LOGGER.info("Stopping container:" + module.container_name)
           container.stop()
-        LOGGER.debug("Container stopped:" + module.container_name)
+        LOGGER.info("Container stopped:" + module.container_name)
     except docker.errors.NotFound:
       pass

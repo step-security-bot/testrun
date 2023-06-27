@@ -50,7 +50,7 @@ class TestRunner:
     signal.signal(signal.SIGQUIT, self._exit_handler)
 
   def _exit_handler(self, signum, arg):  # pylint: disable=unused-argument
-    LOGGER.debug("Exit signal received: " + str(signum))
+    LOGGER.info("Exit signal received: " + str(signum))
     if signum in (2, signal.SIGTERM):
       LOGGER.info("Exit signal received.")
       # Kill all container services quickly

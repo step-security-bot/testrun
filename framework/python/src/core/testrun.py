@@ -125,7 +125,7 @@ class TestRun:  # pylint: disable=too-few-public-methods
     signal.signal(signal.SIGQUIT, self._exit_handler)
 
   def _exit_handler(self, signum, arg):  # pylint: disable=unused-argument
-    LOGGER.debug('Exit signal received: ' + str(signum))
+    LOGGER.info('Exit signal received: ' + str(signum))
     if signum in (2, signal.SIGTERM):
       LOGGER.info('Exit signal received.')
       self.stop(kill=True)
@@ -154,7 +154,7 @@ class TestRun:  # pylint: disable=too-few-public-methods
     self._load_devices(device_dir=RESOURCE_DEVICES_DIR)
 
   def _load_devices(self, device_dir):
-    LOGGER.debug('Loading devices from ' + device_dir)
+    LOGGER.info('Loading devices from ' + device_dir)
 
     os.makedirs(device_dir, exist_ok=True)
 

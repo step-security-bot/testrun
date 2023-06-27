@@ -100,7 +100,7 @@ class DNSValidator:
         """
     command = f'tcpdump -tttt -n -r {CAPTURE_FILE} {tcpdump_filter}'
 
-    LOGGER.debug('tcpdump command: ' + command)
+    LOGGER.info('tcpdump command: ' + command)
 
     process = subprocess.Popen(command,
                                universal_newlines=True,
@@ -109,7 +109,7 @@ class DNSValidator:
                                stderr=subprocess.PIPE)
     text = str(process.stdout.read()).rstrip()
 
-    LOGGER.debug('tcpdump response: ' + text)
+    LOGGER.info('tcpdump response: ' + text)
 
     if text:
       return text.split('\n')

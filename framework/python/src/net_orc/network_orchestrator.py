@@ -90,7 +90,7 @@ class NetworkOrchestrator:
     self.validator = NetworkValidator()
     shutil.rmtree(os.path.join(os.getcwd(), NET_DIR), ignore_errors=True)
     self.network_config = NetworkConfig()
-    LOGGER.debug("test debug string")
+    LOGGER.info("test debug string")
     self.load_config(config_file)
     self._ovs = OVSControl()
     self._ip_ctrl = IPControl()
@@ -98,7 +98,7 @@ class NetworkOrchestrator:
   def start(self):
     """Start the network orchestrator."""
 
-    LOGGER.debug('Starting network orchestrator')
+    LOGGER.info('Starting network orchestrator')
 
     self._host_user = self._get_host_user()
 
@@ -179,7 +179,7 @@ class NetworkOrchestrator:
 
   def _device_discovered(self, mac_addr):
 
-    LOGGER.debug(
+    LOGGER.info(
         f'Discovered device {mac_addr}. Waiting for device to obtain IP')
     device = self._get_device(mac_addr=mac_addr)
 
@@ -249,13 +249,13 @@ class NetworkOrchestrator:
       self._monitor_period = json_config[MONITOR_PERIOD_KEY]
 
   def _check_network_services(self):
-    LOGGER.debug('Checking network modules...')
+    LOGGER.info('Checking network modules...')
     for net_module in self._net_modules:
       if net_module.enable_container:
-        LOGGER.debug('Checking network module: ' + net_module.display_name)
+        LOGGER.info('Checking network module: ' + net_module.display_name)
         success = self._ping(net_module)
         if success:
-          LOGGER.debug(net_module.display_name + ' responded succesfully: ' +
+          LOGGER.info(net_module.display_name + ' responded succesfully: ' +
                        str(success))
         else:
           LOGGER.error(net_module.display_name + ' failed to respond to ping')
@@ -362,7 +362,7 @@ class NetworkOrchestrator:
 
   def load_network_modules(self):
     """Load network modules from module_config.json."""
-    LOGGER.debug('Loading network modules from /' + NETWORK_MODULES_DIR)
+    LOGGER.info('Loading network modules from /' + NETWORK_MODULES_DIR)
 
     loaded_modules = 'Loaded the following network modules: '
     net_modules_dir = os.path.join(self._path, NETWORK_MODULES_DIR)
@@ -450,7 +450,7 @@ class NetworkOrchestrator:
         self._build_module(net_module)
 
   def _build_module(self, net_module):
-    LOGGER.debug('Building network module ' + net_module.dir_name)
+    LOGGER.info('Building network module ' + net_module.dir_name)
     client = docker.from_env()
     client.images.build(dockerfile=os.path.join(net_module.dir,
                                                 net_module.build_file),
@@ -467,9 +467,9 @@ class NetworkOrchestrator:
 
   def _start_network_service(self, net_module):
 
-    LOGGER.debug('Starting net service ' + net_module.display_name)
+    LOGGER.info('Starting net service ' + net_module.display_name)
     network = 'host' if net_module.net_config.host else PRIVATE_DOCKER_NET
-    LOGGER.debug(f"""Network: {network}, image name: {net_module.image_name},
+    LOGGER.info(f"""Network: {network}, image name: {net_module.image_name},
                      container name: {net_module.container_name}""")
     try:
       client = docker.from_env()
@@ -498,7 +498,7 @@ class NetworkOrchestrator:
     if user is None:
       user = self._get_user()
 
-    LOGGER.debug("Network orchestrator host user: " + user)
+    LOGGER.info("Network orchestrator host user: " + user)
     return user
 
   def _get_os_user(self):
@@ -532,29 +532,29 @@ class NetworkOrchestrator:
     return user
 
   def _stop_service_module(self, net_module, kill=False):
-    LOGGER.debug('Stopping Service container ' + net_module.container_name)
+    LOGGER.info('Stopping Service container ' + net_module.container_name)
     try:
       container = self._get_service_container(net_module)
       if container is not None:
         if kill:
-          LOGGER.debug('Killing container:' + net_module.container_name)
+          LOGGER.info('Killing container:' + net_module.container_name)
           container.kill()
         else:
-          LOGGER.debug('Stopping container:' + net_module.container_name)
+          LOGGER.info('Stopping container:' + net_module.container_name)
           container.stop()
-        LOGGER.debug('Container stopped:' + net_module.container_name)
+        LOGGER.info('Container stopped:' + net_module.container_name)
     except Exception as error:  # pylint: disable=W0703
       LOGGER.error('Container stop error')
       LOGGER.error(error)
 
   def _get_service_container(self, net_module):
-    LOGGER.debug('Resolving service container: ' + net_module.container_name)
+    LOGGER.info('Resolving service container: ' + net_module.container_name)
     container = None
     try:
       client = docker.from_env()
       container = client.containers.get(net_module.container_name)
     except docker.errors.NotFound:
-      LOGGER.debug('Container ' + net_module.container_name + ' not found')
+      LOGGER.info('Container ' + net_module.container_name + ' not found')
     except Exception as e:  # pylint: disable=W0703
       LOGGER.error('Failed to resolve container')
       LOGGER.error(e)
@@ -587,7 +587,7 @@ class NetworkOrchestrator:
     self._check_network_services()
 
   def attach_test_module_to_network(self, test_module):
-    LOGGER.debug('Attaching test module  ' + test_module.display_name +
+    LOGGER.info('Attaching test module  ' + test_module.display_name +
                  ' to device bridge')
 
     # Device bridge interface example:
@@ -652,7 +652,7 @@ class NetworkOrchestrator:
 
   # TODO: Let's move this into a separate script? It does not look great
   def _attach_service_to_network(self, net_module):
-    LOGGER.debug('Attaching net service ' + net_module.display_name +
+    LOGGER.info('Attaching net service ' + net_module.display_name +
                  ' to device bridge')
 
     # Device bridge interface example:
@@ -687,7 +687,7 @@ class NetworkOrchestrator:
         sys.exit(1)
 
     if net_module.net_config.enable_wan:
-      LOGGER.debug('Attaching net service ' + net_module.display_name +
+      LOGGER.info('Attaching net service ' + net_module.display_name +
                    ' to internet bridge')
 
       # Internet bridge interface example:

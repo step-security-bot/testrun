@@ -67,9 +67,9 @@ class NmapModule(TestModule):
       ) or self._script_scan_thread.is_alive():
         time.sleep(1)
 
-      LOGGER.debug("TCP scan results: " + str(self._scan_tcp_results))
-      LOGGER.debug("UDP scan results: " + str(self._scan_udp_results))
-      LOGGER.debug("Service scan results: " + str(self._script_scan_results))
+      LOGGER.info("TCP scan results: " + str(self._scan_tcp_results))
+      LOGGER.info("UDP scan results: " + str(self._scan_udp_results))
+      LOGGER.info("Service scan results: " + str(self._script_scan_results))
       self._process_port_results(tests=config)
       LOGGER.info("Unallowed Ports Detected: " + str(self._unallowed_ports))
       self._check_unallowed_port(self._unallowed_ports,config)
@@ -128,7 +128,7 @@ class NmapModule(TestModule):
 
     LOGGER.info("Unknown Port Service: " + unallowed_port['service'])
     for test in tests:
-      LOGGER.debug("Checking for known service: " + test)
+      LOGGER.info("Checking for known service: " + test)
       # Create a regular expression pattern to match the variable at the 
       # end of the string
       port_service = r"\b" + re.escape(unallowed_port['service']) + r"\b$"
@@ -164,7 +164,7 @@ class NmapModule(TestModule):
       for port, config in port_config.items():
         result = None
         LOGGER.info("Checking port: " + str(port))
-        LOGGER.debug("Port config: " + str(config))
+        LOGGER.info("Port config: " + str(config))
         if port in scan_results:
           if scan_results[port]["state"] == "open":
             if not config["allowed"]:
@@ -206,13 +206,13 @@ class NmapModule(TestModule):
     for port in unallowed_ports:
       LOGGER.info('Checking unallowed port: ' + port['port'])
       LOGGER.info('Looking for service: ' + port['service'])
-      LOGGER.debug('Unallowed Port Config: ' + str(port))
+      LOGGER.info('Unallowed Port Config: ' + str(port))
       if port['tcp_udp'] == 'tcp':
         port_style = 'tcp_ports'
       elif port['tcp_udp'] == 'udp':
         port_style = 'udp_ports'
       for test in tests:
-        LOGGER.debug('Checking test: ' + str(test))
+        LOGGER.info('Checking test: ' + str(test))
         # Create a regular expression pattern to match the variable at the 
         # end of the string
         port_service = r"\b" + re.escape(port['service']) + r"\b$"
@@ -354,7 +354,7 @@ class NmapModule(TestModule):
         LOGGER.error(f"Error parsing Nmap output: {e}")
 
   def _process_nmap_json_results(self,nmap_results_json):
-    LOGGER.debug("nmap results\n" + json.dumps(nmap_results_json,indent=2))
+    LOGGER.info("nmap results\n" + json.dumps(nmap_results_json,indent=2))
     results = {}
     if "ports" in nmap_results_json["nmaprun"]["host"]:
       ports = nmap_results_json["nmaprun"]["host"]["ports"] 

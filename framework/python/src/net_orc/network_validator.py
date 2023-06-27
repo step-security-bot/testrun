@@ -48,7 +48,7 @@ class NetworkValidator:
 
   def start(self):
     """Start the network validator."""
-    LOGGER.debug('Starting validator')
+    LOGGER.info('Starting validator')
 
     # Setup the output directory
     host_user = self._get_host_user()
@@ -61,17 +61,17 @@ class NetworkValidator:
 
   def stop(self, kill=False):
     """Stop the network validator."""
-    LOGGER.debug('Stopping validator')
+    LOGGER.info('Stopping validator')
     self._stop_network_devices(kill)
-    LOGGER.debug('Validator stopped')
+    LOGGER.info('Validator stopped')
 
   def _build_network_devices(self):
-    LOGGER.debug('Building network validators...')
+    LOGGER.info('Building network validators...')
     for net_device in self._net_devices:
       self._build_device(net_device)
 
   def _build_device(self, net_device):
-    LOGGER.debug('Building network validator ' + net_device.dir_name)
+    LOGGER.info('Building network validator ' + net_device.dir_name)
     try:
       client = docker.from_env()
       client.images.build(dockerfile=os.path.join(net_device.dir,
@@ -79,7 +79,7 @@ class NetworkValidator:
                           path=self._path,
                           forcerm=True,
                           tag='test-run/' + net_device.dir_name)
-      LOGGER.debug('Validator device built: ' + net_device.dir_name)
+      LOGGER.info('Validator device built: ' + net_device.dir_name)
     except docker.errors.BuildError as error:
       LOGGER.error('Container build error')
       LOGGER.error(error)
@@ -136,14 +136,14 @@ class NetworkValidator:
     LOGGER.info(loaded_devices)
 
   def _start_network_devices(self):
-    LOGGER.debug('Starting network devices')
+    LOGGER.info('Starting network devices')
     for net_device in self._net_devices:
       self._start_network_device(net_device)
 
   def _start_network_device(self, device):
     LOGGER.info('Starting device ' + device.name)
-    LOGGER.debug('Image name: ' + device.image_name)
-    LOGGER.debug('Container name: ' + device.container_name)
+    LOGGER.info('Image name: ' + device.image_name)
+    LOGGER.info('Container name: ' + device.container_name)
 
     try:
       client = docker.from_env()
@@ -181,7 +181,7 @@ class NetworkValidator:
     if user is None:
       user = self._get_user()
 
-    LOGGER.debug(f'Network validator host user: {user}')
+    LOGGER.info(f'Network validator host user: {user}')
     return user
 
   def _get_os_user(self):
@@ -221,7 +221,7 @@ class NetworkValidator:
     return None
 
   def _attach_device_to_network(self, device):
-    LOGGER.debug('Attaching device ' + device.name + ' to device bridge')
+    LOGGER.info('Attaching device ' + device.name + ' to device bridge')
 
     # Device bridge interface example: tr-di-dhcp
     # (Test Run Device Interface for DHCP container)
@@ -264,36 +264,36 @@ class NetworkValidator:
                      ' ip link set dev veth0 up')
 
   def _stop_network_device(self, net_device, kill=False):
-    LOGGER.debug('Stopping device container ' + net_device.container_name)
+    LOGGER.info('Stopping device container ' + net_device.container_name)
     try:
       container = self._get_device_container(net_device)
       if container is not None:
         if kill:
-          LOGGER.debug('Killing container:' + net_device.container_name)
+          LOGGER.info('Killing container:' + net_device.container_name)
           container.kill()
         else:
-          LOGGER.debug('Stopping container:' + net_device.container_name)
+          LOGGER.info('Stopping container:' + net_device.container_name)
           container.stop()
-        LOGGER.debug('Container stopped:' + net_device.container_name)
+        LOGGER.info('Container stopped:' + net_device.container_name)
     except Exception as e:  # pylint: disable=W0703
       LOGGER.error('Container stop error')
       LOGGER.error(e)
 
   def _get_device_container(self, net_device):
-    LOGGER.debug('Resolving device container: ' + net_device.container_name)
+    LOGGER.info('Resolving device container: ' + net_device.container_name)
     container = None
     try:
       client = docker.from_env()
       container = client.containers.get(net_device.container_name)
     except docker.errors.NotFound:
-      LOGGER.debug('Container ' + net_device.container_name + ' not found')
+      LOGGER.info('Container ' + net_device.container_name + ' not found')
     except Exception as e:  # pylint: disable=W0703
       LOGGER.error('Failed to resolve container')
       LOGGER.error(e)
     return container
 
   def _stop_network_devices(self, kill=False):
-    LOGGER.debug('Stopping devices')
+    LOGGER.info('Stopping devices')
     for net_device in self._net_devices:
       # Devices may just be Docker images, so we do not want to stop them
       if not net_device.enable_container:

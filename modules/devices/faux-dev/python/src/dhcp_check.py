@@ -62,12 +62,12 @@ class DHCPValidator:
       try:
         with open(DHCP_LEASE_FILE, 'r', encoding='UTF-8') as lease_file:
           lines = lease_file.read()
-        LOGGER.debug('Lease file:\n' + lines)
+        LOGGER.info('Lease file:\n' + lines)
         leases = lines.split('lease ')
         # Last lease is the current lease
         cur_lease = leases[-1]
         if cur_lease is not None:
-          LOGGER.debug('Current lease: ' + cur_lease)
+          LOGGER.info('Current lease: ' + cur_lease)
           self._dhcp_lease = DHCPLease()
           self.dhcp_lease_test = True
           # Iterate over entire lease and pick the parts we care about
