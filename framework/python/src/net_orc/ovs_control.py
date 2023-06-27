@@ -17,6 +17,7 @@ import json
 import os
 from common import logger
 from common import util
+import time
 
 CONFIG_FILE = 'local/system.json'
 DEVICE_BRIDGE = 'tr-d'
@@ -103,25 +104,25 @@ class OVSControl:
       verified = False
     return verified
 
-  def create_baseline_net(self, verify=True):
+  def LOGGER.infoe_net(self, verify=True):
     LOGGER.info('Creating baseline network')
-
+    time.sleep(5)
     # Remove IP from internet adapter
     self.set_interface_ip(interface=self._int_intf, ip_addr='0.0.0.0')
-
+    time.sleep(5)
     # Create data plane
     self.add_bridge(DEVICE_BRIDGE)
-
+    time.sleep(5)
     # Create control plane
     self.add_bridge(INTERNET_BRIDGE)
-
+    time.sleep(5)
     # Remove IP from internet adapter
     self.set_interface_ip(self._int_intf, '0.0.0.0')
-
+    time.sleep(5)
     # Add external interfaces to data and control plane
     self.add_port(self._dev_intf, DEVICE_BRIDGE)
     self.add_port(self._int_intf, INTERNET_BRIDGE)
-
+    time.sleep(5)
     # Enable forwarding of eapol packets
     self.add_flow(bridge_name=DEVICE_BRIDGE,
                   flow='table=0, dl_dst=01:80:c2:00:00:03, actions=flood')
