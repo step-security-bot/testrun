@@ -1,6 +1,6 @@
 
 #!/bin/bash -e
-
+set -o xtrace
 TESTRUN_OUT=/tmp/testrun.log
 
 ifconfig
