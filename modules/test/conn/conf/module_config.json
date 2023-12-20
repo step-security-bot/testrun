@@ -20,6 +20,18 @@
         "required_result": "Required"
       },
       {
+        "name": "connection.port_speed",
+        "test_description": "The network switch port connected to the device has auto-negotiated a speed that is 10 Mbps or higher",
+        "expected_behavior": "When the ethernet cable is connected to the port, the device autonegotiates a speed.",
+        "required_result": "Required"
+      },
+      {
+        "name": "connection.port_duplex",
+        "test_description": "The network switch port connected to the device has auto-negotiated full-duplex",
+        "expected_behavior": "When the ethernet cable is connected to the port, the device autonegotiates a full-duplex connection.",
+        "required_result": "Required"
+      },
+      {
         "name": "connection.dhcp_address",
         "test_description": "The device under test has received an IP address from the DHCP server and responds to an ICMP echo (ping) request",
         "expected_behavior": "The device is not setup with a static IP address.  The device accepts an IP address from a DHCP server (RFC 2131) and responds succesfully to an ICMP echo (ping) request.",

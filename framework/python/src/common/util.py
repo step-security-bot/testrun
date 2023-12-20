@@ -41,7 +41,7 @@ def run_command(cmd, output=True):
     err_msg = f'{stderr.strip()}. Code: {process.returncode}'
     LOGGER.error('Command failed: ' + cmd)
     LOGGER.error('Error: ' + err_msg)
-  else:
+  elif process.returncode == 0:
     success = True
   if output:
     return stdout.strip().decode('utf-8'), stderr

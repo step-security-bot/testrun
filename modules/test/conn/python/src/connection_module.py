@@ -181,6 +181,39 @@ class ConnectionModule(TestModule):
       LOGGER.info('No switch could be detected')
       return None, 'No switch could be detected'
 
+  def _connection_port_speed(self):
+    LOGGER.info('Running connection.port_speed')
+
+    if self._port_util.switch_online():
+      auto_negotiated = self._port_util.get_auto_negotiated()
+      if auto_negotiated is True:
+        LOGGER.info('Device has auto negotiated speed')
+        return True, 'Device has auto negotiated speed'
+      elif auto_negotiated is False:
+        LOGGER.info('Device has not auto negotiated speed')
+        return False, 'Device has not auto negotiated speed'
+      else:
+        LOGGER.info('Unable to get port auto negotiation')
+        return None, 'Unable to get port auto negotiation'
+    else:
+      LOGGER.info('No switch could be detected')
+      return None, 'No switch could be detected'
+
+  def _connection_port_duplex(self):
+    LOGGER.info('Running connection.port_duplex')
+
+    if self._port_util.switch_online():
+      port_duplex = self._port_util.get_port_duplex()
+      if port_duplex is True:
+        LOGGER.info('Device is using full duplex')
+        return True, 'Device is using full duplex'
+      else:
+        LOGGER.info('Device is not using full duplex')
+        return False, 'Device is not using full duplex'
+    else:
+      LOGGER.info('No switch could be detected')
+      return None, 'No switch could be detected'
+
   def _connection_target_ping(self):
     LOGGER.info('Running connection.target_ping')
 

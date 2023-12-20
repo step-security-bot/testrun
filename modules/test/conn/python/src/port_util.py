@@ -38,7 +38,7 @@ class PortUtil():
   def switch_online(self):
     """Returns True if the switch responds to ping request"""
     cmd = "ping -c 5 " + self._switch_config.get("host")
-    success = util.run_command(cmd, output=True)
+    success = util.run_command(cmd, output=False)
     if success:
       LOGGER.info("Switch has been detected")
       return True
@@ -66,6 +66,44 @@ class PortUtil():
     elif response == "Link detected: yes":
       return True
     return None
+
+  def get_auto_negotiated(self):
+    ssh_client = self._get_ssh_client()
+    ssh_client.connect(self._switch_config.get("host"),
+                       int(self._switch_config.get("ssh_port")),
+                       self._switch_config.get("username"),
+                       self._switch_config.get("password"),
+                       look_for_keys=False,
+                       allow_agent=False)
+    stdout = self._exec(ssh_client, "ethtool " +
+                        self._switch_config.get("device_intf") +
+                        " | grep \"Advertised auto-negotiation\"")[1]
+
+    response = stdout.read().decode().strip()
+    LOGGER.info(response)
+    ssh_client.close()
+    if response == "Advertised auto-negotiation: No":
+      return False
+    elif response == "Advertised auto-negotiation: Yes":
+      return True
+    return None
+
+  def get_port_duplex(self):
+    ssh_client = self._get_ssh_client()
+    ssh_client.connect(self._switch_config.get("host"),
+                       int(self._switch_config.get("ssh_port")),
+                       self._switch_config.get("username"),
+                       self._switch_config.get("password"),
+                       look_for_keys=False,
+                       allow_agent=False)
+    stdout = self._exec(ssh_client, "ethtool " +
+                        self._switch_config.get("device_intf") +
+                        " | grep \"Duplex\"")[1]
+
+    response = stdout.read().decode().strip()
+    LOGGER.info(response)
+    ssh_client.close()
+    return response == "Duplex: Full"
 
   def _exec(self, client, command):
     stdin, stdout, stderr = client.exec_command(command)

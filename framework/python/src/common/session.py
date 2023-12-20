@@ -88,7 +88,7 @@ class TestRunSession():
       'max_device_reports': 5,
       'api_port': 8000,
       'switch': {
-        'host': '192.168.1.1',
+        'host': '10.10.10.10',
         'ssh_port': 22,
         'username': 'root',
         'password': 'Password123',
