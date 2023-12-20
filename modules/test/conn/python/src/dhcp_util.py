@@ -135,7 +135,8 @@ class DHCPUtil():
           This method will attempt to query both primary and secondary DHCP servers for the lease,
           with a 5-second pause between retries until the `timeout` is reached.
       """
-    LOGGER.info('Resolving current lease with max wait time of ' + str(timeout) + ' seconds')
+    LOGGER.info('Resolving current lease with max wait time of ' +
+                str(timeout) + ' seconds')
     start_time = time.time()
 
     while True:

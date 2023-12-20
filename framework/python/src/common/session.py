@@ -28,6 +28,13 @@ LOG_LEVEL_KEY = 'log_level'
 API_PORT_KEY = 'api_port'
 MAX_DEVICE_REPORTS_KEY = 'max_device_reports'
 
+SWITCH_KEY = 'switch'
+SWITCH_HOST_KEY = 'host'
+SWITCH_PORT_KEY = 'ssh_port'
+SWITCH_USER_KEY = 'username'
+SWITCH_PASSWORD_KEY = 'password'
+SWITCH_DEVICE_INTF_KEY = 'eth1'
+
 LOGGER = logger.get_logger('session')
 
 class TestRunSession():
@@ -79,7 +86,14 @@ class TestRunSession():
       'startup_timeout': 60,
       'monitor_period': 30,
       'max_device_reports': 5,
-      'api_port': 8000
+      'api_port': 8000,
+      'switch': {
+        'host': '192.168.1.1',
+        'ssh_port': 22,
+        'username': 'root',
+        'password': 'Password123',
+        'device_intf': 'eth1'
+      }
     }
 
   def get_config(self):
@@ -122,6 +136,39 @@ class TestRunSession():
       if MAX_DEVICE_REPORTS_KEY in config_file_json:
         self._config[MAX_DEVICE_REPORTS_KEY] = config_file_json.get(
           MAX_DEVICE_REPORTS_KEY)
+
+      if SWITCH_KEY in config_file_json:
+        switch_json = config_file_json[SWITCH_KEY]
+
+        # Switch hostname
+        if SWITCH_HOST_KEY in switch_json:
+          self._config[SWITCH_KEY][SWITCH_HOST_KEY] = switch_json.get(
+            SWITCH_HOST_KEY
+          )
+
+        # Switch ssh port
+        if SWITCH_PORT_KEY in switch_json:
+          self._config[SWITCH_KEY][SWITCH_PORT_KEY] = switch_json.get(
+            SWITCH_PORT_KEY
+          )
+
+        # Swtich username
+        if SWITCH_USER_KEY in switch_json:
+          self._config[SWITCH_KEY][SWITCH_USER_KEY] = switch_json.get(
+            SWITCH_USER_KEY
+          )
+
+        # Switch password
+        if SWITCH_PASSWORD_KEY in switch_json:
+          self._config[SWITCH_KEY][SWITCH_PASSWORD_KEY] = switch_json.get(
+            SWITCH_PASSWORD_KEY
+          )
+
+        # Device interface in switch
+        if SWITCH_DEVICE_INTF_KEY in switch_json:
+          self._config[SWITCH_KEY][SWITCH_DEVICE_INTF_KEY] = switch_json.get(
+            SWITCH_DEVICE_INTF_KEY
+          )
 
       LOGGER.debug(self._config)
 
@@ -168,6 +215,24 @@ class TestRunSession():
 
   def get_max_device_reports(self):
     return self._config.get(MAX_DEVICE_REPORTS_KEY)
+
+  def get_switch_hostname(self):
+    return self._config.get(SWITCH_KEY, {}).get(SWITCH_HOST_KEY)
+
+  def get_switch_port(self):
+    return self._config.get(SWITCH_KEY, {}).get(SWITCH_PORT_KEY)
+
+  def get_switch_username(self):
+    return self._config.get(SWITCH_KEY, {}).get(SWITCH_USER_KEY)
+
+  def get_switch_password(self):
+    return self._config.get(SWITCH_KEY, {}).get(SWITCH_PASSWORD_KEY)
+
+  def get_switch_device_interface(self):
+    return self._config.get(SWITCH_KEY, {}).get(SWITCH_DEVICE_INTF_KEY)
+
+  def get_switch_config(self):
+    return self._config.get(SWITCH_KEY)
 
   def set_config(self, config_json):
     self._config.update(config_json)

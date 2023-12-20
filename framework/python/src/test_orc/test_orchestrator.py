@@ -274,8 +274,7 @@ class TestOrchestrator:
       device_test_dir = os.path.join(self._root_path, RUNTIME_DIR,
                                      device.mac_addr.replace(":", ""))
 
-      root_certs_dir = os.path.join(self._root_path,DEVICE_ROOT_CERTS)
-
+      root_certs_dir = os.path.join(self._root_path, DEVICE_ROOT_CERTS)
 
       container_runtime_dir = os.path.join(device_test_dir, module.name)
       os.makedirs(container_runtime_dir, exist_ok=True)
@@ -299,25 +298,25 @@ class TestOrchestrator:
           privileged=True,
           detach=True,
           mounts=[
-              Mount(target="/runtime/output",
-                    source=container_runtime_dir,
-                    type="bind"),
-              Mount(target="/runtime/network",
-                    source=network_runtime_dir,
-                    type="bind",
-                    read_only=True),
-              Mount(target="/runtime/device/startup.pcap",
-                    source=device_startup_capture,
-                    type="bind",
-                    read_only=True),
-              Mount(target="/runtime/device/monitor.pcap",
-                    source=device_monitor_capture,
-                    type="bind",
-                    read_only=True),
-              Mount(target="/testrun/root_certs",
-                    source=root_certs_dir,
-                    type="bind",
-                    read_only=True)
+            Mount(target="/runtime/output",
+                  source=container_runtime_dir,
+                  type="bind"),
+            Mount(target="/runtime/network",
+                  source=network_runtime_dir,
+                  type="bind",
+                  read_only=True),
+            Mount(target="/runtime/device/startup.pcap",
+                  source=device_startup_capture,
+                  type="bind",
+                  read_only=True),
+            Mount(target="/runtime/device/monitor.pcap",
+                  source=device_monitor_capture,
+                  type="bind",
+                  read_only=True),
+            Mount(target="/testrun/root_certs",
+                  source=root_certs_dir,
+                  type="bind",
+                  read_only=True)
           ],
           environment={
             "TZ": self.get_session().get_timezone(),
@@ -326,7 +325,8 @@ class TestOrchestrator:
             "IPV4_ADDR": device.ip_addr,
             "DEVICE_TEST_MODULES": json.dumps(device.test_modules),
             "IPV4_SUBNET": self._net_orc.network_config.ipv4_network,
-            "IPV6_SUBNET": self._net_orc.network_config.ipv6_network
+            "IPV6_SUBNET": self._net_orc.network_config.ipv6_network,
+            "SWITCH_CONFIG": json.dumps(self._session.get_switch_config())
           })
     except (docker.errors.APIError,
             docker.errors.ContainerError) as container_error:
@@ -379,6 +379,7 @@ class TestOrchestrator:
       LOGGER.error(
           f"Error occurred whilst obtaining results for module {module.name}")
       LOGGER.error(results_error)
+      return
 
     LOGGER.info(f"Test module {module.name} has finished")
 

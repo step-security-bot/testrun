@@ -20,6 +20,7 @@ from datetime import datetime
 
 LOGGER = None
 RESULTS_DIR = '/runtime/output/'
+SYSTEM_CONF_FILE = '/testrun/system.json'
 CONF_FILE = '/testrun/conf/module_config.json'
 
 
@@ -32,6 +33,7 @@ class TestModule:
     self._ipv4_addr = os.environ['IPV4_ADDR']
     self._ipv4_subnet = os.environ['IPV4_SUBNET']
     self._ipv6_subnet = os.environ['IPV6_SUBNET']
+    self._switch_config = json.loads(os.environ['SWITCH_CONFIG'])
     self._add_logger(log_name=log_name, module_name=module_name)
     self._config = self._read_config()
     self._device_ipv4_addr = None

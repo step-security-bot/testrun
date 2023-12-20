@@ -21,6 +21,7 @@ from test_module import TestModule
 from dhcp1.client import Client as DHCPClient1
 from dhcp2.client import Client as DHCPClient2
 from dhcp_util import DHCPUtil
+from port_util import PortUtil
 
 LOG_NAME = 'test_connection'
 LOGGER = None
@@ -46,6 +47,7 @@ class ConnectionModule(TestModule):
     self.dhcp1_client = DHCPClient1()
     self.dhcp2_client = DHCPClient2()
     self._dhcp_util = DHCPUtil(self.dhcp1_client, self.dhcp2_client, LOGGER)
+    self._port_util = PortUtil(self._switch_config, LOGGER)
     self._lease_wait_time_sec = LEASE_WAIT_TIME_DEFAULT
 
     # ToDo: Move this into some level of testing, leave for
@@ -85,7 +87,8 @@ class ConnectionModule(TestModule):
 
   def _connection_dhcp_address(self):
     LOGGER.info('Running connection.dhcp_address')
-    lease = self._dhcp_util.get_cur_lease(mac_address=self._device_mac, timeout=self._lease_wait_time_sec)
+    lease = self._dhcp_util.get_cur_lease(mac_address=self._device_mac,
+                                          timeout=self._lease_wait_time_sec)
     if lease is not None:
       if 'ip' in lease:
         ip_addr = lease['ip']
@@ -159,6 +162,24 @@ class ConnectionModule(TestModule):
       return result, 'Device is using a single IP address'
     else:
       return result, 'Device is using multiple IP addresses'
+
+  def _connection_port_link(self):
+    LOGGER.info('Running connection.port_link')
+
+    if self._port_util.switch_online():
+      port_link = self._port_util.get_port_link()
+      if port_link is True:
+        LOGGER.info('Port link status is UP')
+        return True, 'Port link status is UP'
+      elif port_link is False:
+        LOGGER.info('Port link status is DOWN')
+        return False, 'Port link status is DOWN'
+      else:
+        LOGGER.info('Unable to get port link status')
+        return None, 'Unable to get port link status'
+    else:
+      LOGGER.info('No switch could be detected')
+      return None, 'No switch could be detected'
 
   def _connection_target_ping(self):
     LOGGER.info('Running connection.target_ping')
