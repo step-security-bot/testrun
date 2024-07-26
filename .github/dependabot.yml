@@ -1,0 +1,71 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /framework
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/network/base/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/network/radius/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/base/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/conn/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/dns/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/ntp/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/protocol/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/services/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /modules/test/tls/python
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /modules/ui
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /testing/docker/ci_baseline
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /testing/docker/ci_test_device1
+    schedule:
+      interval: daily
